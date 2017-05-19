@@ -4,8 +4,8 @@ FLAGS=-O3 -Wno-unused-result
 LDFLAGS=-lpthread
 NTHREADS=4
 #DEBUG=-DDEBUG
-RESULT=-DRESULT
-INPUT=input-little.in
+#RESULT=-DRESULT
+INPUT=input-big.in
 all: clean_compile_run
 
 gol: gol.c
@@ -21,3 +21,6 @@ clean_compile_run:
 	
 run:
 	cat $(INPUT) | ./gol $(NTHREADS)
+	
+seq:
+	$(CC) $(DEBUG) $(RESULT) $(FLAGS) gol_sequencial.c -o gol

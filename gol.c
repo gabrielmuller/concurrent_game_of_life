@@ -56,19 +56,32 @@ int adjacent_to (cell_t ** board, int size, int i, int j) {
   return count;
 }
 
+/* print the life board */
+void print (cell_t ** board, int size) {
+  int	i, j;
+  /* for each row */
+  for (j=0; j<size; j++) {
+    /* print each column position... */
+    for (i=0; i<size; i++)
+    printf ("%c", board[i][j] ? 'x' : ' ');
+    /* followed by a carriage return */
+    printf ("\n");
+  }
+}
+
 /* line_start: em que linha começa a calcular (inclusivo)
  * line_end: em que linha termina de calcular (exclusivo)
  */
-void play (cell_t ** board, cell_t ** newboard, int size, int line_start, int line_end) {
+void play (int size, int line_start, int line_end) {
   int	i, j, a;
   /* for each cell, apply the rules of Life */
   for (i=line_start; i<line_end; i++)
   for (j=0; j<size; j++) {
-    a = adjacent_to (board, size, i, j);
-    if (a == 2) newboard[i][j] = board[i][j];
-    if (a == 3) newboard[i][j] = 1;
-    if (a < 2) newboard[i][j] = 0;
-    if (a > 3) newboard[i][j] = 0;
+    a = adjacent_to (prev, size, i, j);
+    if (a == 2) next[i][j] = prev[i][j];
+    if (a == 3) next[i][j] = 1;
+    if (a < 2) next[i][j] = 0;
+    if (a > 3) next[i][j] = 0;
   }
 }
 
@@ -87,7 +100,7 @@ void* start (void* args) {
   
   //a cada geração
   for (int i=0; i<steps; i++) {
-    play (prev,next,size,start,end);
+    play (size, start, end);
 
     //espera todas threads terminarem de calcular
     pthread_barrier_wait(&gen);
@@ -105,18 +118,6 @@ void* start (void* args) {
     
     //espera primeira thread terminar o procedimento
     pthread_barrier_wait(&gen);
-  }
-}
-/* print the life board */
-void print (cell_t ** board, int size) {
-  int	i, j;
-  /* for each row */
-  for (j=0; j<size; j++) {
-    /* print each column position... */
-    for (i=0; i<size; i++)
-    printf ("%c", board[i][j] ? 'x' : ' ');
-    /* followed by a carriage return */
-    printf ("\n");
   }
 }
 
